@@ -1,0 +1,8 @@
+@import '@/common/styles/variable.scss';
+.aside {
+  height: 100vh;
+  overflow-y: auto;
+  width: 200px;
+  background-color: $dark-bg;
+  color: $success-bg;
+}
