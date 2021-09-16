@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 // import styles from './index.module.scss'
+import MainLayout from '@/components/MainLayout'
 import Aside from '@/components/Aside'
 
 function App() {
@@ -10,9 +11,7 @@ function App() {
   }, [])
 
   return (
-    <div className="App">
-      <Aside />
-    </div>
+    <MainLayout aside={<Aside />} main={<main />} />
   )
 }
 
