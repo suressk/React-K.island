@@ -4,6 +4,12 @@ import styles from './index.module.scss'
 interface ILoginProps {
 
 }
+
+// const LoginTitle: React.FC = () => {
+//   return (<>
+//   </>)
+// }
+
 /**
  * @description 登录✌️
  * @author Saul
@@ -13,8 +19,22 @@ interface ILoginProps {
 const Index: React.FC<ILoginProps> = (): JSX.Element => {
 
   return (
-    <section className={styles.login_wrapper}>
-      Login
+    <section className={`flex-center ${styles.login_wrapper}`}>
+      <div className={styles.login_bg} />
+      <div className={styles.login_bg} />
+      <div className={styles.login_bg} />
+
+      <main className={`flex-center ${styles.login_form_container}`}>
+        <span className={styles.circle} />
+        <span className={styles.circle} />
+        <span className={styles.circle} />
+        <span className={styles.circle} />
+        <span className={styles.circle} />
+
+        <form>
+          Login
+        </form>
+      </main>
     </section>
   )
 }
