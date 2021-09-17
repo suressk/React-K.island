@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
+import styleImport from 'vite-plugin-style-import'
 
 import { resolve } from 'path'
 /**
@@ -11,7 +12,18 @@ const resolvePath = (dir: string): string => resolve(__dirname, '.', dir)
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [reactRefresh()],
+  plugins: [
+    reactRefresh(),
+    styleImport({
+      libs: [
+        {
+          libraryName: 'antd',
+          esModule: true,
+          resolveStyle: (name: string) => `antd/es/${name}/style/css`
+        }
+      ]
+    })
+  ],
   resolve: {
     alias: {
       '@': resolvePath('src'),

@@ -1,4 +1,6 @@
 import React, { memo } from "react";
+import { useTranslation } from 'react-i18next'
+import { Button, Input } from 'antd'
 import styles from './index.module.scss'
 
 interface ILoginProps {
@@ -18,6 +20,8 @@ interface ILoginProps {
  */
 const Index: React.FC<ILoginProps> = (): JSX.Element => {
 
+  const { t } = useTranslation()
+
   return (
     <section className={`flex-center ${styles.login_wrapper}`}>
       <div className={styles.login_bg} />
@@ -31,8 +35,17 @@ const Index: React.FC<ILoginProps> = (): JSX.Element => {
         <span className={styles.circle} />
         <span className={styles.circle} />
 
-        <form>
-          Login
+        <form className={styles.login_form}>
+          <div className={styles.login_form_item}>{t('login')}</div>
+          <div className={styles.login_form_item}>
+            <Input placeholder={t('login')} />
+          </div>
+          <div className={styles.login_form_item}>
+            <Input placeholder={t('login')} type="password" autoComplete="false" />
+          </div>
+          <div className={styles.login_form_item}>
+            <Button type="primary">{t('login')}</Button>
+          </div>
         </form>
       </main>
     </section>

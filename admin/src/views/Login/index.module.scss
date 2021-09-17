@@ -2,6 +2,10 @@ $r-bg: #ff359b;
 $y-bg: #fffd87;
 $b-bg: #00d2ff;
 
+$base-space: 8px;
+$space-2: 2 * $base-space;
+$space-4: 4 * $base-space;
+
 $white-1: rgba(255, 255, 255, .1);
 $white-2: rgba(255, 255, 255, .2);
 
@@ -109,11 +113,17 @@ $white-2: rgba(255, 255, 255, .2);
 
       }
     }
+  }
 
-    form {
-      width: 100%;
-      height: 100%;
-      padding: 50px;
+  &_form {
+    width: 100%;
+    height: 100%;
+    padding: 50px;
+
+    &_item {
+      &:not(:last-child) {
+        margin-bottom: $space-2;
+      }
     }
   }
 }
