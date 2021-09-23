@@ -1,0 +1,138 @@
+$r-bg: #ff359b;
+$y-bg: #fffd87;
+$b-bg: #00d2ff;
+
+$base-space: 8px;
+$space-2: 2 * $base-space;
+$space-4: 4 * $base-space;
+
+$white-1: rgba(255, 255, 255, .1);
+$white-2: rgba(255, 255, 255, .2);
+
+.login {
+  &_wrapper {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  &_bg {
+    position: absolute;
+    filter: blur(200px);
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    z-index: -1;
+    &:nth-child(1) {
+      top: -350px;
+      width: 600px;
+      height: 600px;
+      background-color: $r-bg;
+    }
+    &:nth-child(2) {
+      bottom: -150px;
+      left: 100px;
+      background-color: $y-bg;
+    }
+    &:nth-child(3) {
+      bottom: 50px;
+      right: 100px;
+      background-color: $b-bg;
+    }
+  }
+
+  &_form_container {
+    position: relative;
+    width: 400px;
+    min-height: 400px;
+    background-color: $white-1;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-right: 1px solid $white-1;
+    border-bottom: 1px solid $white-1;
+    border-radius: 25px;
+
+    .circle {
+      position: absolute;
+      background-color: rgba(255, 0, 0, 0.3);
+      backdrop-filter: blur(5px);
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+      // border: 1px solid rgba(255, 255, 255, 0.5);
+      border-right: 1px solid $white-2;
+      border-bottom: 1px solid $white-2;
+      border-radius: 50%;
+      animation: bubbling 10s ease-in-out infinite;
+      &:nth-child(1) {
+        filter: drop-shadow(10px 10px 10px $r-bg);
+        top: -50px;
+        right: -60px;
+        width: 100px;
+        height: 100px;
+      }
+      &:nth-child(2) {
+        // filter: hue-rotate(70deg);
+        filter: drop-shadow(10px 10px 10px $r-bg) invert(25%);
+        animation-delay: -1s;
+        top: 150px;
+        left: -100px;
+        width: 120px;
+        height: 120px;
+
+      }
+      &:nth-child(3) {
+        // filter: hue-rotate(140deg);
+        filter: drop-shadow(10px 10px 10px $r-bg) invert(50%);
+        animation-delay: -2s;
+        bottom: 50px;
+        right: -60px;
+        width: 80px;
+        height: 80px;
+        z-index: 2;
+
+      }
+      &:nth-child(4) {
+        // filter: hue-rotate(210deg);
+        filter: drop-shadow(10px 10px 10px $r-bg) invert(75%);
+        animation-delay: -3s;
+        bottom: -80px;
+        left: 100px;
+        width: 60px;
+        height: 60px;
+
+      }
+      &:nth-child(5) {
+        // filter: hue-rotate(280deg);
+        filter: drop-shadow(10px 10px 10px $r-bg) invert(100%);
+        animation-delay: -4s;
+        top: -80px;
+        left: 140px;
+        width: 60px;
+        height: 60px;
+
+      }
+    }
+  }
+
+  &_form {
+    width: 100%;
+    height: 100%;
+    padding: 50px;
+
+    &_item {
+      &:not(:last-child) {
+        margin-bottom: $space-2;
+      }
+    }
+  }
+}
+
+@keyframes bubbling {
+  0%, 100% {
+      transform: translateY(-50px);
+  }
+  50% {
+      transform: translateY(50px);
+  }
+}

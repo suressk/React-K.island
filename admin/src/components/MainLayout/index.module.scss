@@ -1,0 +1,14 @@
+.layout {
+  height: 100vh;
+  &_aside {
+    width: 200px;
+    height: 100vh;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+
+  &_main {
+    height: 100vh;
+    flex: 1;
+  }
+}
