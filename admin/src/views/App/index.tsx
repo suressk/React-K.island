@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Switch, BrowserRouter as Router, Route } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 import zhCN from 'antd/lib/locale/zh_CN'
 import '@utils/i18n'
@@ -6,6 +7,8 @@ import '@utils/i18n'
 import MainLayout from '@/components/MainLayout'
 import Aside from '@/components/Aside'
 import Login from '../Login'
+
+const whiteList = ['/login']
 
 function App() {
   const [count, setCount] = useState(0)
@@ -17,7 +20,13 @@ function App() {
   return (
     <ConfigProvider locale={zhCN}>
       {/* <MainLayout aside={<Aside />} main={<main />} /> */}
-      <Login />
+      {/* <Login /> */}
+      <Router>
+        <Switch>
+          <Route path='/login' component={Login} />
+          <Route path='/' component={MainLayout} />
+        </Switch>
+      </Router>
     </ConfigProvider>
   )
 }

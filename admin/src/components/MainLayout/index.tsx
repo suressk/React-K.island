@@ -1,21 +1,21 @@
 import React, { memo } from 'react'
+import Aside from '../Aside'
 import styles from './index.module.scss'
 
 interface IMainLayoutProps {
-  aside: JSX.Element;
-  main: JSX.Element;
+  children: JSX.Element;
 }
 
 const Index: React.FC<IMainLayoutProps> = (props) => {
-  const { aside, main } = props
+  const { children } = props
   return (
     <div className={`flex ${styles.layout}`}>
       <div className={styles.layout_aside}>
-        {aside}
+        <Aside />
       </div>
 
       <div className={styles.layout_main}>
-        {main}
+        {children}
       </div>
     </div>
   )
