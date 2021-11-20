@@ -35,7 +35,7 @@ const Index: React.FC<ILoginProps> = (): JSX.Element => {
         <span className={styles.circle} />
         <span className={styles.circle} />
 
-        <form className={styles.login_form}>
+        <form className={styles.login_form} autoComplete="off">
           <div className={styles.login_form_item}>{t('login')}</div>
           <div className={styles.login_form_item}>
             <Input placeholder={t('login')} />

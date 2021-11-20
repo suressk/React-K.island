@@ -11,6 +11,7 @@
     "dayjs": "^1.10.7",
     "i18next": "^20.6.1",
     "isomorphic-fetch": "^3.0.0",
+    "lodash": "^4.17.21",
     "querystring": "^0.2.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@types/isomorphic-fetch": "0.0.35",
+    "@types/lodash": "^4.14.177",
     "@types/node": "^16.9.1",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",

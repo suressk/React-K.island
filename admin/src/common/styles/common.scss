@@ -9,6 +9,18 @@
   --danger-bg: rgba(255, 234, 236, 1);
 }
 
+:root body {
+  &[theme="dark"] {
+    --dark-bg: #051e28;
+    --primary: #0097ea;
+    --primary-bg: rgba(217, 243, 255, 1);
+    --success: #60bd8a;
+    --success-bg: rgba(234, 255, 241, 1);
+    --danger: #e65c60;
+    --danger-bg: rgba(255, 234, 236, 1);
+  }
+}
+
 .flex,
 .flex-center,
 .flex-between,

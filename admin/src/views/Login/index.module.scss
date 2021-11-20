@@ -44,7 +44,7 @@ $white-2: rgba(255, 255, 255, .2);
 
   &_form_container {
     position: relative;
-    width: 400px;
+    width: 500px;
     min-height: 400px;
     background-color: $white-1;
     backdrop-filter: blur(5px);
@@ -64,6 +64,8 @@ $white-2: rgba(255, 255, 255, .2);
       border-bottom: 1px solid $white-2;
       border-radius: 50%;
       animation: bubbling 10s ease-in-out infinite;
+      width: 60px;
+      height: 60px;
       &:nth-child(1) {
         filter: drop-shadow(10px 10px 10px $r-bg);
         top: -50px;
@@ -98,9 +100,6 @@ $white-2: rgba(255, 255, 255, .2);
         animation-delay: -3s;
         bottom: -80px;
         left: 100px;
-        width: 60px;
-        height: 60px;
-
       }
       &:nth-child(5) {
         // filter: hue-rotate(280deg);
@@ -108,9 +107,6 @@ $white-2: rgba(255, 255, 255, .2);
         animation-delay: -4s;
         top: -80px;
         left: 140px;
-        width: 60px;
-        height: 60px;
-
       }
     }
   }

@@ -1,0 +1,71 @@
+$border: rgba(0, 0, 0, 0.2);
+$color-MI: #00a2ff;
+
+.wrapper {
+  display: flex;
+  align-items: center;
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    box-sizing: border-box;
+
+    .decrease,
+    .increase {
+      display: inline-block;
+      position: relative;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid $color-MI;
+      &::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform-origin: center;
+        transform: translate(-50%, -50%);
+        width: 70%;
+        height: 4px;
+        background-color: $color-MI;
+      }
+    }
+
+    .increase::after {
+      content: "";
+      position: absolute;
+      width: 70%;
+      height: 4px;
+      left: 50%;
+      top: 50%;
+      transform-origin: center;
+      transform: translate(-50%, -50%) rotate(90deg);
+      // transform: rotate(90deg);
+      background-color: $color-MI;
+      transform-origin: center;
+    }
+  }
+
+  .ipt {
+    border: 2px solid $border;
+    width: 300px;
+    height: 64px;
+    line-height: 64px;
+    font-size: 32px;
+    color: rgba(0, 0, 0, 0.7);
+    border-radius: 8px;
+    box-sizing: border-box;
+    // margin: 0 18px;
+    position: relative;
+    padding: 8px;
+    text-align: center;
+    outline: none;
+
+    &:focus {
+      text-align: left;
+      border-color: $color-MI;
+    }
+  }
+}
