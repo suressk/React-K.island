@@ -13,7 +13,8 @@ interface NativeNumberInputProps {
   precision?: number; // 小数点后保留几位(0则为整数)
   wrapperClassName?: string; // 外层容器类名
   className?: string; // 输入框类名
-  tipHandler?: () => void; // 超出极值 toast 提示
+  tipHandler?: (min: number, max: number) => void; // 超出 范围 提示方法
+  needStepBtn?: boolean;
 }
 
 // 两数相加，保留小数位多的小数位长度
@@ -49,56 +50,69 @@ const NativeNumberInput: React.FC<NativeNumberInputProps> = (
     value: defaultValue,
     onChange,
     tipHandler,
+    needStepBtn = true,
   } = props;
 
   // 存储值
   const [value, setValue] = useState(_toString(defaultValue));
 
   // 格式化数字（TODO：处理整数 / 小数）
-  const parseValue = useCallback((num: string): string => {
-    // console.log('parseValue start: ', num);
-    if (num === "") return "0";
-    const numStr = _toString(num);
+  const parseValue = useCallback(
+    (num: string): string => {
+      // console.log('parseValue start: ', num);
+      if (num === "") return "0";
+      const numStr = _toString(num);
 
-    // 0 开头且无小数点
-    if (numStr.indexOf("0") === 0 && numStr.indexOf(".") === -1) {
-      // 处理 01 变成 1,并且不处理 1.
-      return _toString(parseFloat(num));
-    }
-    // '0.' 开头 且可转为数字
-    if (
-      numStr.indexOf("0") === 0 &&
-      numStr.indexOf(".") === 1 &&
-      !isNaN(Number(num))
-    ) {
+      // 不保留小数
+      if (precision === 0) {
+        // 替换非数字字符
+        return num.replace(/\D/g, "");
+      }
+
+      // 0 开头且无小数点
+      if (numStr.indexOf("0") === 0 && numStr.indexOf(".") === -1) {
+        // 处理 01 变成 1,并且不处理 1.
+        return _toString(parseFloat(num));
+      }
+      // '0.' 开头 且可转为数字
+      if (
+        numStr.indexOf("0") === 0 &&
+        numStr.indexOf(".") === 1 &&
+        !isNaN(Number(num))
+      ) {
+        return _toString(num);
+      }
+
+      // 保留 precision 位小数，如 两位：[0 ~ 99999.99]
+      // 有值且不可转为有效数字（'0.'也在其列 <!0 为 true>，故上面单独处理）
+      if (num && !Number(num)) {
+        // 转为浮点型数
+        return _toString(parseFloat(num));
+      }
+      // 可转为有效数字
+      // console.log('可转为有效数字: ', num);
       return _toString(num);
-    }
-    // 不保留小数
-    if (precision === 0) {
-      // 替换非数字字符
-      return num.replace(/\D/g, "");
-    }
-
-    // 保留 precision 位小数，如 两位：[0 ~ 99999.99]
-    // 有值且不可转为有效数字（'0.'也在其列 <!0 为 true>，故上面单独处理）
-    if (num && !Number(num)) {
-      // 转为浮点型数
-      return _toString(parseFloat(num));
-    }
-    // 可转为有效数字
-    // console.log('可转为有效数字: ', num);
-    return _toString(num);
-  }, []);
+    },
+    [precision]
+  );
 
   // 极值判断
   const judgeExtremeValue = useCallback(
-    (val: string) => {
+    (val: string, resetMin = false) => {
       const judgedVal = Number(val);
-      if (judgedVal < min) {
-        tipHandler?.(); // 提示信息
-        val = _toString(min);
-      } else if (judgedVal > max) {
-        tipHandler?.();
+      // 无需重置为最小值
+      if (!resetMin) {
+        if (val === "" || judgedVal < min) {
+          tipHandler?.(min, max); // 提示信息
+        }
+      } else {
+        if (judgedVal < min) {
+          tipHandler?.(min, max); // 提示信息
+          val = _toString(min);
+        }
+      }
+      if (judgedVal > max) {
+        tipHandler?.(min, max);
         val = _toString(max);
       }
       return val;
@@ -149,6 +163,7 @@ const NativeNumberInput: React.FC<NativeNumberInputProps> = (
     [handleValue, onChange]
   );
 
+  // 变更输入框显示的值
   const changeVal = useCallback(
     (newValue: string) => {
       setValue(newValue);
@@ -157,16 +172,21 @@ const NativeNumberInput: React.FC<NativeNumberInputProps> = (
     [onChange]
   );
 
+  // 输入框失去焦点
+  const handleBlur = useCallback(() => {
+    changeVal(judgeExtremeValue(value, true));
+  }, [value]);
+
   // 数值增加按钮
   const handleIncrease = useCallback(() => {
     const addedVal = addNum(Number(value), step);
-    changeVal(judgeExtremeValue(_toString(addedVal)));
+    changeVal(judgeExtremeValue(_toString(addedVal), true));
   }, [value, step]);
 
   // 数值减小
   const handleDecrease = useCallback(() => {
     const addedVal = addNum(Number(value), -1 * step);
-    changeVal(judgeExtremeValue(_toString(addedVal)));
+    changeVal(judgeExtremeValue(_toString(addedVal), true));
   }, [value, step]);
 
   const rootCls = classnames(styles.wrapper, wrapperClassName);
@@ -174,20 +194,25 @@ const NativeNumberInput: React.FC<NativeNumberInputProps> = (
 
   return (
     <div className={rootCls}>
-      <div className={styles.icon} onClick={handleDecrease}>
-        <span className={styles.decrease} />
-      </div>
+      {needStepBtn && (
+        <div className={styles.icon} onClick={handleDecrease}>
+          <span className={styles.decrease} />
+        </div>
+      )}
 
       <input
         className={iptCls}
         value={value}
         type="text"
         onChange={handleChange}
+        onBlur={handleBlur}
       />
 
-      <div className={styles.icon} onClick={handleIncrease}>
-        <span className={styles.increase} />
-      </div>
+      {needStepBtn && (
+        <div className={styles.icon} onClick={handleIncrease}>
+          <span className={styles.increase} />
+        </div>
+      )}
     </div>
   );
 };

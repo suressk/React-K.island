@@ -1,5 +1,6 @@
 // css variables
 :root body {
+  --border: #d9d9d9;
   --dark-bg: #051e28;
   --primary: #0097ea;
   --primary-bg: rgba(217, 243, 255, 1);
@@ -7,6 +8,7 @@
   --success-bg: rgba(234, 255, 241, 1);
   --danger: #e65c60;
   --danger-bg: rgba(255, 234, 236, 1);
+  --light-txt: rgba(22, 24, 35, 0.3); // 淡墨色
 }
 
 :root body {
@@ -39,4 +41,3 @@
 .flex-around {
   justify-content: space-around;
 }
-
