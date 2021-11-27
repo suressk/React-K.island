@@ -21,14 +21,42 @@ export const addNum = (num1: number, num2: number): number => {
 };
 
 // 格式化数字，处理01变成1,并且不处理1. 这种情况
-export function parseValue(num: string): string {
-  if (num === "") return "0";
-
+export function parseValue(num: string, precision = 0): string {
+  // console.log('parseValue start: ', num);
+  // if (num === '') return '0';
   const numStr = _toString(num);
+
+  // 0 开头且无小数点
   if (numStr.indexOf("0") === 0 && numStr.indexOf(".") === -1) {
-    // 处理01变成1,并且不处理1.
+    // 处理 01 变成 1,并且不处理 1.
     return _toString(parseFloat(num));
   }
+  // 不保留小数
+  if (precision === 0) {
+    // 替换非数字字符
+    return num.replace(/\D/g, "");
+  }
+  // 输入字符不能转为数字
+  const numIsNaN = isNaN(Number(num));
+  // '0.' 开头 且可转为数字
+  if (numStr.indexOf("0") === 0 && numStr.indexOf(".") === 1 && !numIsNaN) {
+    return _toString(num);
+  }
+
+  // 保留 precision 位小数，如 两位：[0 ~ 99999.99]
+  // 有值且不可转为有效数字（'0.' 上面单独处理）
+  // 'saf' => 非数字字符
+  if (num && numIsNaN) {
+    const parseNum = parseFloat(num);
+    // 非数字
+    if (isNaN(parseNum)) {
+      return "";
+    }
+    // 转为浮点型数
+    return _toString(parseNum);
+  }
+  // 可转为有效数字
+  // console.log('可转为有效数字: ', num);
   return _toString(num);
 }
 
