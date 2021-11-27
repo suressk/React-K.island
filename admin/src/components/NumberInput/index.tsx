@@ -1,42 +1,27 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, memo } from "react";
 import _toString from "lodash/toString";
-
-import styles from "./index.module.less";
 import classnames from "classnames";
+import { addNum, parseValue } from "./util";
+import styles from "./index.module.less";
 
 interface NativeNumberInputProps {
   onChange?: (value: number) => void;
-  value?: number; // 数值
+  value?: number | string; // 数值
   step?: number; // 每步变化数
   min?: number;
   max?: number;
   precision?: number; // 小数点后保留几位(0则为整数)
   wrapperClassName?: string; // 外层容器类名
   className?: string; // 输入框类名
-  tipHandler?: (min: number, max: number) => void; // 超出 范围 提示方法
-  needStepBtn?: boolean;
+  tipHandler?: (min: number, max: number) => void; // 超出极值 toast 提示
+  needStepBtn?: boolean; // 是否需要 - & + 按钮
 }
 
-// 两数相加，保留小数位多的小数位长度
-const addNum = (num1: number, num2: number): number => {
-  let sq1 = 0,
-    sq2 = 0;
-  try {
-    // 数值 num1 小数位数
-    sq1 = _toString(num1).split(".")[1].length;
-  } catch (e) {
-    sq1 = 0;
-  }
-  try {
-    // 数值 num2 小数位数
-    sq2 = _toString(num2).split(".")[1].length;
-  } catch (e) {
-    sq2 = 0;
-  }
-  const m = Math.pow(10, Math.max(sq1, sq2));
-  return (Math.round(num1 * m) + Math.round(num2 * m)) / m;
-};
-
+/**
+ * 封装原生数字输入框，目前不支持负数
+ * @param props
+ * @returns
+ */
 const NativeNumberInput: React.FC<NativeNumberInputProps> = (
   props
 ): JSX.Element => {
@@ -54,54 +39,14 @@ const NativeNumberInput: React.FC<NativeNumberInputProps> = (
   } = props;
 
   // 存储值
-  const [value, setValue] = useState(_toString(defaultValue));
-
-  // 格式化数字（TODO：处理整数 / 小数）
-  const parseValue = useCallback(
-    (num: string): string => {
-      // console.log('parseValue start: ', num);
-      if (num === "") return "0";
-      const numStr = _toString(num);
-
-      // 不保留小数
-      if (precision === 0) {
-        // 替换非数字字符
-        return num.replace(/\D/g, "");
-      }
-
-      // 0 开头且无小数点
-      if (numStr.indexOf("0") === 0 && numStr.indexOf(".") === -1) {
-        // 处理 01 变成 1,并且不处理 1.
-        return _toString(parseFloat(num));
-      }
-      // '0.' 开头 且可转为数字
-      if (
-        numStr.indexOf("0") === 0 &&
-        numStr.indexOf(".") === 1 &&
-        !isNaN(Number(num))
-      ) {
-        return _toString(num);
-      }
-
-      // 保留 precision 位小数，如 两位：[0 ~ 99999.99]
-      // 有值且不可转为有效数字（'0.'也在其列 <!0 为 true>，故上面单独处理）
-      if (num && !Number(num)) {
-        // 转为浮点型数
-        return _toString(parseFloat(num));
-      }
-      // 可转为有效数字
-      // console.log('可转为有效数字: ', num);
-      return _toString(num);
-    },
-    [precision]
-  );
+  const [value, setValue] = useState(_toString(defaultValue) || "0");
 
   // 极值判断
   const judgeExtremeValue = useCallback(
-    (val: string, resetMin = false) => {
+    (val: string, checkMin = false) => {
       const judgedVal = Number(val);
-      // 无需重置为最小值
-      if (!resetMin) {
+      // 是否检测最小值
+      if (!checkMin) {
         if (val === "" || judgedVal < min) {
           tipHandler?.(min, max); // 提示信息
         }
@@ -111,6 +56,7 @@ const NativeNumberInput: React.FC<NativeNumberInputProps> = (
           val = _toString(min);
         }
       }
+      // 检测最大值
       if (judgedVal > max) {
         tipHandler?.(min, max);
         val = _toString(max);
@@ -124,7 +70,7 @@ const NativeNumberInput: React.FC<NativeNumberInputProps> = (
   const handleValue = useCallback(
     (val: string): string => {
       // parseValue() 返回的【一定】是一个可转为数字的值 [string]
-      const parsedVal = parseValue(val);
+      const parsedVal = parseValue(val, precision);
       // console.log('parsedVal: ', parsedVal);
       let resultVal = ""; // 最终处理后的结果
       // 整数
@@ -151,19 +97,7 @@ const NativeNumberInput: React.FC<NativeNumberInputProps> = (
     [precision, judgeExtremeValue]
   );
 
-  const handleChange = useCallback(
-    (e) => {
-      const val = e.target.value;
-      // console.log('handleChange: ', val);
-      const newValue = handleValue(val);
-      // console.log('最终赋值结果 newValue: ', newValue);
-      setValue(newValue);
-      onChange?.(Number(newValue));
-    },
-    [handleValue, onChange]
-  );
-
-  // 变更输入框显示的值
+  // 更新 value
   const changeVal = useCallback(
     (newValue: string) => {
       setValue(newValue);
@@ -172,9 +106,26 @@ const NativeNumberInput: React.FC<NativeNumberInputProps> = (
     [onChange]
   );
 
-  // 输入框失去焦点
+  // 输入框内容变更触发
+  const handleChange = useCallback(
+    (e) => {
+      const val = e.target.value;
+      // console.log('handleChange: ', val);
+      const newValue = handleValue(val);
+      // console.log('最终赋值结果 newValue: ', newValue);
+      changeVal(newValue);
+    },
+    [handleValue, changeVal]
+  );
+
+  // 输入框失焦触发
   const handleBlur = useCallback(() => {
-    changeVal(judgeExtremeValue(value, true));
+    const val = judgeExtremeValue(value, true);
+    if (val === "") {
+      changeVal("0");
+    } else {
+      changeVal(val);
+    }
   }, [value]);
 
   // 数值增加按钮
@@ -183,7 +134,7 @@ const NativeNumberInput: React.FC<NativeNumberInputProps> = (
     changeVal(judgeExtremeValue(_toString(addedVal), true));
   }, [value, step]);
 
-  // 数值减小
+  // 数值减小按钮
   const handleDecrease = useCallback(() => {
     const addedVal = addNum(Number(value), -1 * step);
     changeVal(judgeExtremeValue(_toString(addedVal), true));
@@ -217,4 +168,4 @@ const NativeNumberInput: React.FC<NativeNumberInputProps> = (
   );
 };
 
-export default NativeNumberInput;
+export default memo(NativeNumberInput);
