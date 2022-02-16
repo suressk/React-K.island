@@ -15,7 +15,8 @@
   "author": "Saul || suressk",
   "license": "MIT",
   "dependencies": {
-    "koa": "^2.13.1"
+    "koa": "^2.13.4",
+    "koa-static": "^5.0.0"
   },
   "devDependencies": {
     "@types/koa": "^2.13.4",
